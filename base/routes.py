@@ -22,7 +22,6 @@ api.add_resource(DeleteUserResource, admin_view+"delete_user")
 api.add_resource(GetBlockedUserListResource, admin_view+"blocked_user_list")
 api.add_resource(GetDeletedUserListResource, admin_view+"deleted_user_list")
 
-
 api.add_resource(DashboardResource, admin_view+"dashboard")
 api.add_resource(DeliveryDetailsListResource, admin_view+"get_delivery_list")
 api.add_resource(UserWiseDeliveryDetailsListResource, admin_view+"get_user_delivery_list")
