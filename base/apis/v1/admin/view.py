@@ -8,6 +8,7 @@ from pathlib import Path
 from base.apis.v1.user.models import User,AddCommentDeliveryDetails
 from datetime import datetime
 from dotenv import load_dotenv
+from base.common.utils import push_notification
 # env_path = Path('/var/www/html/backend/base/.env')
 # load_dotenv(dotenv_path=env_path)
 load_dotenv()
@@ -32,6 +33,17 @@ class UserChatsResource(Resource):
             add_chat = UserChats(title=title,description=description,user_ids=user_id,created_time=datetime.utcnow())
             db.session.add(add_chat)
             db.session.commit()
+
+            split_user_ids = user_id.split(',')
+            if len(split_user_ids)>0:
+                for i in split_user_ids:
+                    get_user = User.query.filter(User.device_token != None,User.device_type != None).first()
+                    if get_user:
+
+                        title = f'{title}'
+                        msg = f'{description}'
+
+                        push_notification(token=get_user.device_token, title=title, body=msg)
 
             return jsonify({'status': 1,'message': 'Message successfully sent to users'})
 

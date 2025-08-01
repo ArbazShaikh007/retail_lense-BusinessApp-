@@ -104,47 +104,47 @@ USER_FOLDER = 'base/static/images/'
 #     print('Email Sent...')
 #     server.quit()
 
-# cred = credentials.Certificate('base/dato_key.json')
-# firebase_admin.initialize_app(cred)
-#
-# def push_notification(token, title=None, body=None):
-#     try:
-#
-#         sound = "default"
-#
-#         message = messaging.Message(
-#             notification=messaging.Notification(
-#                 title=title,
-#                 body=body,
-#
-#             ),
-#
-#             android=messaging.AndroidConfig(
-#                 notification=messaging.AndroidNotification(
-#                     sound=sound
-#                 ),
-#             ),
-#             apns=messaging.APNSConfig(
-#                 payload=messaging.APNSPayload(
-#                     aps=messaging.Aps(
-#                         sound=sound
-#                         # badge=0,
-#                         # # content_available=True,
-#                     )
-#                 )
-#             ),
-#
-#             token=token,
-#
-#         )
-#
-#         response = messaging.send(message)
-#
-#         # Log the response
-#         print(f'Successfully sent message: {response}')
-#
-#     except Exception as e:
-#         print('Error sending message:', e)
+cred = credentials.Certificate('base/retaillense.json')
+firebase_admin.initialize_app(cred)
+
+def push_notification(token, title=None, body=None):
+    try:
+
+        sound = "default"
+
+        message = messaging.Message(
+            notification=messaging.Notification(
+                title=title,
+                body=body,
+
+            ),
+
+            android=messaging.AndroidConfig(
+                notification=messaging.AndroidNotification(
+                    sound=sound
+                ),
+            ),
+            apns=messaging.APNSConfig(
+                payload=messaging.APNSPayload(
+                    aps=messaging.Aps(
+                        sound=sound
+                        # badge=0,
+                        # # content_available=True,
+                    )
+                )
+            ),
+
+            token=token,
+
+        )
+
+        response = messaging.send(message)
+
+        # Log the response
+        print(f'Successfully sent message: {response}')
+
+    except Exception as e:
+        print('Error sending message:', e)
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in {
