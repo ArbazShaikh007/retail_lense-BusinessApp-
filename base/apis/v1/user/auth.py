@@ -126,6 +126,19 @@ class UserLoginResource(Resource):
             print('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+class StaticOtpVerifyResource(Resource):
+    @token_required
+    def get(self,active_user):
+        try:
+            active_user.is_otp = True
+            db.session.commit()
+
+            return jsonify({'status': 1,'message': 'Success','data': active_user.as_dict_user()})
+
+        except Exception as e:
+            print('errorrrrrrrrrrrrrrrrr:', str(e))
+            return {'status': 0, 'message': 'Something went wrong'}, 500
+
 class UserUpdateResource(Resource):
     @token_required
     def post(self,active_user):
@@ -172,7 +185,7 @@ class UserUpdateResource(Resource):
             profile_pic_path = active_user.profile_pic_path
 
             if profile_pic:
-                file_path, picture = upload_photos_local(profile_pic)
+                file_path, picture = upload_photos(profile_pic)
                 profile_pic_name = picture
                 profile_pic_path = file_path
 

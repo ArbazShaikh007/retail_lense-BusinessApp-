@@ -8,7 +8,7 @@ from base.common.path import COMMON_URL
 from datetime import datetime
 from enum import Enum
 from sqlalchemy.dialects.mysql import LONGTEXT
-
+from base.common.path import generate_presigned_url
 from pathlib import Path
 from dotenv import load_dotenv
 # env_path = Path('/var/www/html/backend/base/.env')
@@ -31,6 +31,7 @@ class User(db.Model):
 
     created_time = db.Column(db.DateTime)
     is_approved = db.Column(db.Boolean(), default=False)
+    is_otp = db.Column(db.Boolean(), default=False)
     is_deleted = db.Column(db.Boolean(), default=False)
     delete_reason = db.Column(db.String(1000))
     deleted_time = db.Column(db.DateTime)
@@ -39,7 +40,8 @@ class User(db.Model):
     device_type = db.Column(db.String(50))
 
     is_notification = db.Column(db.Boolean(), default=True)
-    user_delivery_details = db.relationship('LocationDetails', backref='user_delivery_details')
+    # user_delivery_details = db.relationship('LocationDetails', backref='user_delivery_details')
+    delivery_comment_details = db.relationship('AddCommentDeliveryDetails', backref='delivery_comment_details')
 
     def get_user_token(self):
         serial = Serializer(os.getenv("SECRET_KEY"))
@@ -67,7 +69,7 @@ class User(db.Model):
         profile_pic = ""
 
         if self.profile_pic is not None:
-            profile_pic = COMMON_URL + self.profile_pic_path + self.profile_pic
+            profile_pic = generate_presigned_url(self.profile_pic)
             # profile_pic = self.profile_pic_path
 
         return {
@@ -84,7 +86,8 @@ class User(db.Model):
             'device_token': self.device_token if self.device_token is not None else '',
             'device_type': self.device_type if self.device_type is not None else '',
             'token': token,
-            'is_approved': self.is_approved
+            'is_approved': self.is_approved,
+            'is_otp': self.is_otp
         }
 
     def as_dict_user(self):
@@ -97,7 +100,7 @@ class User(db.Model):
         profile_pic = ""
 
         if self.profile_pic is not None:
-            profile_pic = COMMON_URL + self.profile_pic_path + self.profile_pic
+            profile_pic = generate_presigned_url(self.profile_pic)
             # profile_pic = self.profile_pic_path
         return {
 
@@ -113,7 +116,8 @@ class User(db.Model):
             'device_token': self.device_token if self.device_token is not None else '',
             'device_type': self.device_type if self.device_type is not None else '',
             "is_block": self.is_block,
-            'is_approved': self.is_approved
+            'is_approved': self.is_approved,
+            'is_otp': self.is_otp
         }
 
 def token_required(f):
@@ -162,9 +166,38 @@ class AddCommentDeliveryDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True,
                    autoincrement=True, nullable=False)
     comment = db.Column(db.String(550))
+    lat = db.Column(db.String(50))
+    long = db.Column(db.String(50))
     created_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'))
-    location_id = db.Column(db.Integer, db.ForeignKey('location_details.id', ondelete='CASCADE', onupdate='CASCADE'))
+    # location_id = db.Column(db.Integer, db.ForeignKey('location_details.id', ondelete='CASCADE', onupdate='CASCADE'))
+
+    def as_dict(self):
+        input_date = datetime.strptime(str(self.created_time), "%Y-%m-%d %H:%M:%S")
+        output_date = input_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+        profile_pic = ""
+
+        if self.delivery_comment_details.profile_pic is not None:
+            profile_pic = generate_presigned_url(self.delivery_comment_details.profile_pic)
+
+        get_images = ImageDeliveryDetails.query.filter_by(comment_id=self.id).all()
+
+        get_images_list = [ i.as_dict() for i in get_images ]
+
+        return {
+
+            'id': self.id,
+            'comment': self.comment if self.comment is not None else '',
+            'lat': self.lat if self.lat is not None else '',
+            'long': self.long if self.long is not None else '',
+            'created_time': output_date,
+            'user_id': self.user_id,
+            'username': self.delivery_comment_details.firstname+ ' '+ self.delivery_comment_details.lastname,
+            'user_image': profile_pic,
+            'image_list': get_images_list
+
+        }
 
 class ImageDeliveryDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True,
@@ -173,12 +206,12 @@ class ImageDeliveryDetails(db.Model):
     image_path = db.Column(db.String(150))
     created_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE', onupdate='CASCADE'))
-    location_id = db.Column(db.Integer, db.ForeignKey('location_details.id', ondelete='CASCADE', onupdate='CASCADE'))
+    # location_id = db.Column(db.Integer, db.ForeignKey('location_details.id', ondelete='CASCADE', onupdate='CASCADE'))
     comment_id = db.Column(db.Integer, db.ForeignKey('add_comment_delivery_details.id', ondelete='CASCADE', onupdate='CASCADE'))
 
     def as_dict(self):
         return {
 
             'id': self.id,
-            'image': COMMON_URL+ self.image_path + self.image_name
+            'image': generate_presigned_url(self.image_name)
         }

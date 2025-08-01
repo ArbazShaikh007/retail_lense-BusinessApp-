@@ -9,14 +9,15 @@ from email.mime.text import MIMEText
 from flask import url_for, jsonify, request
 from base.apis.v1.admin.models import Admin
 from functools import wraps
+import boto3
 
-REGION_NAME = ''
-ACCESS_KEY = ''
-SECRET_KEY = ''
-S3_BUCKET = ''
+REGION_NAME = 'Asia Pacific (Singapore) ap-southeast-1'
+ACCESS_KEY = 'AKIAVOJTX26J5R6MV236'
+SECRET_KEY = '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'
+S3_BUCKET = 'businessapp-buck'
 
-# s3_client = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
-#                          aws_secret_access_key=SECRET_KEY)
+s3_client = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
+                         aws_secret_access_key=SECRET_KEY)
 
 USER_FOLDER = 'base/static/images/'
 
