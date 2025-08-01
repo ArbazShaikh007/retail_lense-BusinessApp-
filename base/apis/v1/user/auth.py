@@ -97,7 +97,6 @@ class UserLoginResource(Resource):
             device_token = data.get('device_token')
             device_type = data.get('device_type')
 
-
             check_user = User.query.filter_by(mobile_number=mobile_number,country_code=country_code, is_deleted=False).first()
 
             if check_user:

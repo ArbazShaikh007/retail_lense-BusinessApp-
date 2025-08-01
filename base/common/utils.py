@@ -11,10 +11,16 @@ from base.apis.v1.admin.models import Admin
 from functools import wraps
 import boto3
 
-REGION_NAME = 'Asia Pacific (Singapore) ap-southeast-1'
-ACCESS_KEY = 'AKIAVOJTX26J5R6MV236'
-SECRET_KEY = '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'
-S3_BUCKET = 'businessapp-buck'
+from pathlib import Path
+from dotenv import load_dotenv
+# env_path = Path('/var/www/html/backend/base/.env')
+# load_dotenv(dotenv_path=env_path)
+load_dotenv()
+
+REGION_NAME = os.getenv("REGION_NAME")
+ACCESS_KEY = os.getenv("ACCESS_KEY")
+SECRET_KEY = os.getenv("S3_SECRET_KEY")
+S3_BUCKET = os.getenv("S3_BUCKET")
 
 s3_client = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
                          aws_secret_access_key=SECRET_KEY)
