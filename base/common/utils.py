@@ -28,6 +28,7 @@ s3_client = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
 USER_FOLDER = 'base/static/images/'
 
 
+
 # def send_otp(user, otp):
 #     otp_value = str(otp)
 #
