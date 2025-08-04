@@ -10,7 +10,7 @@ COMMON_URL = 'http://192.168.31.14:7117'
 
 REGION_NAME = os.getenv("REGION_NAME")
 ACCESS_KEY = os.getenv("ACCESS_KEY")
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("S3_SECRET_KEY")
 S3_BUCKET = os.getenv("S3_BUCKET")
 
 s3_client = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
