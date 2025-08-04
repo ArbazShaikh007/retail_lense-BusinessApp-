@@ -421,12 +421,12 @@ def user_send_reset_email(user, type):
 
         print('Composing Email.......')
 
-        SERVER = 'smtp.gmail.com'  # smtp server
-        PORT = 587  # mail port number
-        FROM = 'fearsfight211@gmail.com'  # sender Mail
-        TO = user.email  # receiver mail
-        PASS = 'mdltifkjmclajper'
-        MAIL_FROM_NAME = "Buisnessapp"
+        SERVER = os.getenv("SERVER")
+        PORT = os.getenv("PORT")
+        FROM = os.getenv("FROM")
+        TO = user.email
+        PASS = os.getenv("PASS")
+        MAIL_FROM_NAME = os.getenv("MAIL_FROM_NAME")
 
         msg = MIMEMultipart()
         content = '''
