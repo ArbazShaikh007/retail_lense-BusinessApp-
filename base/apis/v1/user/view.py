@@ -12,7 +12,6 @@ from sqlalchemy import or_
 # env_path = Path('/var/www/html/backend/base/.env')
 # load_dotenv(dotenv_path=env_path)
 
-
 load_dotenv()
 USER_FOLDER = 'base/static/images/'
 
