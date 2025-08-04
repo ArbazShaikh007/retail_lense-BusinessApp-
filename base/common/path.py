@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 from pathlib import Path
 load_dotenv()
 
+# env_path = Path('/var/www/html/backend/base/.env')
+# load_dotenv(dotenv_path=env_path)
+
 COMMON_URL = 'http://192.168.31.14:7117'
 
 REGION_NAME = os.getenv("REGION_NAME")
