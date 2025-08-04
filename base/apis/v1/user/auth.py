@@ -9,6 +9,7 @@ from pathlib import Path
 from base.common.utils import upload_photos
 from base.apis.v1.user.models import User,token_required
 
+
 # env_path = Path('/var/www/html/backend/base/.env')
 # load_dotenv(dotenv_path=env_path)
 
