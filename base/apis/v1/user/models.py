@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 # load_dotenv(dotenv_path=env_path)
 load_dotenv()
 
+# This is user model to store user data
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True,
                    autoincrement=True, nullable=False)
@@ -120,6 +121,7 @@ class User(db.Model):
             'is_otp': self.is_otp
         }
 
+# This is user decorator to validate user with its jwt authorize token which is pass in api header
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
@@ -162,6 +164,7 @@ def token_required(f):
 
     return decorator
 
+# This model for the add image and comment on the delivery of users
 class AddCommentDeliveryDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True,
                    autoincrement=True, nullable=False)
@@ -199,6 +202,7 @@ class AddCommentDeliveryDetails(db.Model):
 
         }
 
+# This model is saved multiple images data for getting list of images
 class ImageDeliveryDetails(db.Model):
     id = db.Column(db.Integer, primary_key=True,
                    autoincrement=True, nullable=False)

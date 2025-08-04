@@ -4,6 +4,7 @@ from itsdangerous import URLSafeTimedSerializer as Serializer
 from base.apis.v1.user.models import User
 import os
 
+# This is admin model to store admin information
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fullname = db.Column(db.String(150), nullable=True)
@@ -111,6 +112,7 @@ class Admin(db.Model):
 #
 #                     }
 
+# This model for the saving cms page like terms and condition, privacy and policies etc
 class Cms(db.Model):
     id = db.Column(db.Integer, primary_key=True,
                        autoincrement=True, nullable=False)
@@ -123,20 +125,7 @@ class Cms(db.Model):
                 'content': self.content if self.content is not None else ""
                     }
 
-class Faqs(db.Model):
-    id = db.Column(db.Integer, primary_key=True,
-                   autoincrement=True, nullable=False)
-    question = db.Column(db.Text,
-                         nullable=False)
-    answer = db.Column(db.Text,
-                         nullable=False)
-
-    def as_dict_admin(self):
-        return {'id': self.id,
-                'question': self.question,
-                'answer': self.answer
-                }
-
+#This model for send message to user with title and description.
 class UserChats(db.Model):
     id = db.Column(db.Integer, primary_key=True,
                    autoincrement=True, nullable=False)

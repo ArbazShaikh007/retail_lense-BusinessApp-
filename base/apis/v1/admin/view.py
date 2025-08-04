@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 from base.common.utils import admin_login_required
 from base.common.path import generate_presigned_url
-from base.apis.v1.admin.models import Admin,Cms,UserChats
+from base.apis.v1.admin.models import Cms,UserChats
 from base.database.db import db
 from pathlib import Path
 from base.apis.v1.user.models import User,AddCommentDeliveryDetails
@@ -13,6 +13,9 @@ from base.common.utils import push_notification
 # load_dotenv(dotenv_path=env_path)
 load_dotenv()
 
+# Note: @admin_login_required this we are user for admin authorization with jwt token secure our endpoints
+
+#This apis for send user message and get list of all messages sent to users
 class UserChatsResource(Resource):
     @admin_login_required
     def post(self, active_user):
@@ -37,7 +40,7 @@ class UserChatsResource(Resource):
             split_user_ids = user_id.split(',')
             if len(split_user_ids)>0:
                 for i in split_user_ids:
-                    get_user = User.query.filter(User.device_token != None,User.device_type != None).first()
+                    get_user = User.query.filter(User.device_token != None,User.device_type != None,User.id == i).first()
                     if get_user:
 
                         title = f'{title}'
@@ -64,6 +67,7 @@ class UserChatsResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for get list of all deleted users accounts by admin or by them self
 class GetDeletedUserListResource(Resource):
     @admin_login_required
     def post(self, active_user):
@@ -81,7 +85,7 @@ class GetDeletedUserListResource(Resource):
                 "current_page": page,
                 "has_next": get_users.has_next,
                 "per_page": per_page,
-                "total_pages": get_users.pages,
+                "total_pages": get_users.pages
             }
 
             return jsonify({'status': 1,'message': 'Success','user_list': user_list,'pagination_info': pagination_info})
@@ -90,6 +94,7 @@ class GetDeletedUserListResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for get list of all blocked users accounts by admin
 class GetBlockedUserListResource(Resource):
     @admin_login_required
     def post(self, active_user):
@@ -107,7 +112,7 @@ class GetBlockedUserListResource(Resource):
                 "current_page": page,
                 "has_next": get_users.has_next,
                 "per_page": per_page,
-                "total_pages": get_users.pages,
+                "total_pages": get_users.pages
             }
 
             return jsonify({'status': 1,'message': 'Success','user_list': user_list,'pagination_info': pagination_info})
@@ -116,6 +121,7 @@ class GetBlockedUserListResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for delete user account by admin
 class DeleteUserResource(Resource):
     @admin_login_required
     def post(self, active_user):
@@ -137,6 +143,7 @@ class DeleteUserResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for block user from the admin panel
 class BlockUserResource(Resource):
     @admin_login_required
     def post(self, active_user):
@@ -158,6 +165,7 @@ class BlockUserResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for the retrive terms and condition and update also on admin panel
 class TermsConditionsResource(Resource):
     @admin_login_required
     def get(self, active_user):
@@ -186,6 +194,7 @@ class TermsConditionsResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for the retrive privacy and policy and update also on admin panel
 class PrivacyPolicyResource(Resource):
     @admin_login_required
     def get(self, active_user):
@@ -215,6 +224,7 @@ class PrivacyPolicyResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This is dashboard api for getting user counts and etc..  on admin panel
 class DashboardResource(Resource):
     @admin_login_required
     def get(self, active_user):
@@ -227,6 +237,7 @@ class DashboardResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for getting user list for the send message to user time multiple selection in admin panel without pagination
 class GetUserListNoPaginationResource(Resource):
     @admin_login_required
     def get(self, active_user):
@@ -260,6 +271,7 @@ class GetUserListNoPaginationResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for the getting user list on admin panel
 class GetUserListResource(Resource):
     @admin_login_required
     def post(self, active_user):
@@ -279,7 +291,7 @@ class GetUserListResource(Resource):
                 "current_page": page,
                 "has_next": get_users.has_next,
                 "per_page": per_page,
-                "total_pages": get_users.pages,
+                "total_pages": get_users.pages
             }
 
             return jsonify({'status': 1,'message': 'Success','user_list': user_list,'pagination_info': pagination_info})
@@ -570,6 +582,7 @@ class GetUserListResource(Resource):
 #             print('errorrrrrrrrrrrrrrrrr:', str(e))
 #             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for getting all delivery list on admin panel
 class DeliveryListResource(Resource):
     @admin_login_required
     def post(self, active_user):
@@ -586,7 +599,7 @@ class DeliveryListResource(Resource):
                             "current_page": page,
                             "has_next": get_delivery_data.has_next,
                             "per_page": per_page,
-                            "total_pages": get_delivery_data.pages,
+                            "total_pages": get_delivery_data.pages
                         }
 
             return jsonify({'status': 1,'message': 'Success','get_delivery_list': get_delivery_list,'pagination_info': pagination_info})

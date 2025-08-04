@@ -4,12 +4,10 @@ from base.common.utils import admin_login_required
 from datetime import datetime, timedelta
 import os
 import jwt
-import secrets
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
 from base.apis.v1.admin.models import Admin
 from base.database.db import db
-from base.common.utils import user_send_reset_email,upload_photos_local,upload_photos
+from base.common.utils import user_send_reset_email,upload_photos
 from pathlib import Path
 from dotenv import load_dotenv
 # env_path = Path('/var/www/html/backend/base/.env')
@@ -18,6 +16,7 @@ load_dotenv()
 
 UPLOAD_FOLDER = "base/static/images/"
 
+# This is admin register api when we need to create account for the admin from postman we can create it and use it, its create jwt token for authentication.
 class RegisterResource(Resource):
     def post(self):
         data = request.get_json()
@@ -57,12 +56,15 @@ class RegisterResource(Resource):
 
         return jsonify({'status': 1,'message': "Registration successfully.", 'data':admin.as_dict(token)})
 
+# This is admin login api for login in to admin panel
 class LoginResource(Resource):
     def post(self):
         data = request.get_json()
 
         email = data.get("email")
         password = data.get("password")
+
+
 
         admin = Admin.query.filter_by(email=email).first()
 
@@ -76,12 +78,14 @@ class LoginResource(Resource):
         else:
             return jsonify({'status': 0,'message': "Invalid email or password."})
 
+# This api for get admin information of profile
 class GetUserResource(Resource):
     @admin_login_required
     def get(self, active_user):
         token = request.headers.get("authorization")
         return jsonify({'status':1,'message':"Success",'data': active_user.as_dict(token)})
 
+# This api for change password of admin profile
 class ChangePasswordResource(Resource):
     @admin_login_required
     def put(self, active_user):
@@ -99,6 +103,7 @@ class ChangePasswordResource(Resource):
         else:
             return jsonify({'status': 0,'message': "Invalid current password."})
 
+# This is admin update profile for updating profile picture and other information
 class EditProfileResource(Resource):
     @admin_login_required
     def put(self, active_user):
@@ -137,6 +142,7 @@ class EditProfileResource(Resource):
             print('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 400
 
+# This api for reset password request
 class AdminForgetPassword(Resource):
     def post(self):
         try:
@@ -154,6 +160,7 @@ class AdminForgetPassword(Resource):
         except Exception as e:
             return {'status': 0, 'message': 'Something went wrong', 'error': str(e)}, 400
 
+# This api for reset password on webpage
 class AdminResetPassword(Resource):
     def get(self):
         token = request.args.get('token')
@@ -182,6 +189,7 @@ class AdminResetPassword(Resource):
 
         return make_response(redirect(url_for('success_page')))
 
+# This is success page after successfully admin or user reset password
 class SuccessPage(Resource):
     def get(self):
         return make_response(render_template('success_msg.html', common_path=''))

@@ -15,6 +15,7 @@ from sqlalchemy import or_
 load_dotenv()
 USER_FOLDER = 'base/static/images/'
 
+#This api for get terms and condition data in app side
 class GetTermsResource(Resource):
     def get(self):
         try:
@@ -26,6 +27,7 @@ class GetTermsResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+#This api for get privacy and policies data in app side
 class GetPrivacyResource(Resource):
     def get(self):
         try:
@@ -37,6 +39,7 @@ class GetPrivacyResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for delete user account
 class UserDeleteAccountResource(Resource):
     @token_required
     def get(self, active_user):
@@ -114,6 +117,7 @@ class UserDeleteAccountResource(Resource):
 #             print('errorrrrrrrrrrrrrrrrr:', str(e))
 #             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for getting admin messages user can see all messages
 class GetAdminChatsResource(Resource):
     @token_required
     def post(self, active_user):
@@ -161,6 +165,7 @@ class GetAdminChatsResource(Resource):
             print('error:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for add details for delivery (like image, comment)
 class AddDetailsResource(Resource):
     @token_required
     def post(self, active_user):

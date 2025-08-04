@@ -1,15 +1,12 @@
-import jwt,json
+import jwt
 import os
-import secrets
-from datetime import datetime, timedelta, date
-from flask import request, jsonify,make_response,render_template,redirect,url_for
+from datetime import datetime, timedelta
+from flask import request, jsonify
 from flask_restful import Resource
-from werkzeug.security import generate_password_hash
-from werkzeug.utils import secure_filename
 from base.database.db import db
 from dotenv import load_dotenv
 from pathlib import Path
-from base.common.utils import upload_photos_local,upload_photos,user_send_reset_email,delete_photos,delete_photos_local
+from base.common.utils import upload_photos
 from base.apis.v1.user.models import User,token_required
 
 # env_path = Path('/var/www/html/backend/base/.env')
@@ -18,6 +15,7 @@ from base.apis.v1.user.models import User,token_required
 load_dotenv()
 USER_FOLDER = 'base/static/images/'
 
+# This is user register api to store data in to database and create jwt token for authentication
 class UserRegisterResource(Resource):
     def post(self):
         try:
@@ -88,6 +86,7 @@ class UserRegisterResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This is user login api
 class UserLoginResource(Resource):
     def post(self):
         try:
@@ -126,6 +125,7 @@ class UserLoginResource(Resource):
             print('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for testing otp scenario
 class StaticOtpVerifyResource(Resource):
     @token_required
     def get(self,active_user):
@@ -139,6 +139,7 @@ class StaticOtpVerifyResource(Resource):
             print('errorrrrrrrrrrrrrrrrr:', str(e))
             return {'status': 0, 'message': 'Something went wrong'}, 500
 
+# This api for the user can update own profile informations, and retrive user profile
 class UserUpdateResource(Resource):
     @token_required
     def post(self,active_user):
